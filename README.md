@@ -108,14 +108,14 @@ Running inference with Steerable Policies can be done with a server-client setup
 These instructions are loosely adapted from [Manipulator Gym](https://github.com/rail-berkeley/manipulator_gym).
 
 On the machine connected to the WidowX, you will need to install:
-- [Steerable Gym](https://github.com/steerable-policies/steerable_gym) (our adapted version of Manipulator Gym)
+- [Steerable Gym](https://github.com/steerable-policies/steerable-gym) (our adapted version of Manipulator Gym)
 - [AgentLace](https://github.com/youliangtan/agentlace)
 - [Trossen's Interbotix and ROS scripts](https://docs.trossenrobotics.com/interbotix_xsarms_docs/ros_interface/ros1/software_setup.html)
 
 The former two packages are Python packages, and can thus be installed with `pip install -e .` in their respective repos. The Trossen scripts depend more heavily on the particulars of the machine connected to the WidowX, so please follow the instructions on that page.
 
 ### Installation: Policy Machine
-On the machine that will host the policy, you will need a conda environment with this repo, [Steerable Gym](https://github.com/steerable-policies/steerable_gym), and [AgentLace](https://github.com/youliangtan/agentlace) installed. Follow the instructions in [**Installation**](#installation) to install this repo, then run `pip install -e .` to install Steerable Gym and AgentLace, as was done on the robot machine. You do *not* need to install ROS on this machine.
+On the machine that will host the policy, you will need a conda environment with this repo, [Steerable Gym](https://github.com/steerable-policies/steerable-gym), and [AgentLace](https://github.com/youliangtan/agentlace) installed. Follow the instructions in [**Installation**](#installation) to install this repo, then run `pip install -e .` to install Steerable Gym and AgentLace, as was done on the robot machine. You do *not* need to install ROS on this machine.
 
 Additionally, be sure to include a valid `.hf_token` file in this repo (see [OpenVLA's instructions here](https://github.com/openvla/openvla?tab=readme-ov-file#fully-fine-tuning-openvla) for details).
 
@@ -131,12 +131,12 @@ roslaunch interbotix_xsarm_control xsarm_control.launch robot_model:=wx250s use_
 Then, in the conda environment where Manipulator Gym and AgentLace are installed, run:
 ```
 source ~/interbotix_ws/devel/setup.bash # Or whichever folder contains the ROS workspace
-cd /PATH/TO/steerable_gym
+cd /PATH/TO/steerable-gym
 python3 manipulator_server.py --widowx --cam_ids 0
 ```
 
 **On the policy machine:** First host the VLA server. 
-After downloading the policy weights [here](https://huggingface.co/Embodied-CoT/steerable-policy-openvla-7b-bridge), activate the conda environment this repo was installed in and `cd` into `steerable_gym/policies`, then run:
+After downloading the policy weights [here](https://huggingface.co/Embodied-CoT/steerable-policy-openvla-7b-bridge), activate the conda environment this repo was installed in and `cd` into `steerable-gym/policies`, then run:
 ```
 # Hosts the steerable policy
 # You can send it http requests containing the task language and images, to which it will reply with actions.
@@ -144,7 +144,7 @@ After downloading the policy weights [here](https://huggingface.co/Embodied-CoT/
 # Hosting it on a server is good because you won't have to reload the model every time the eval script crashes / is closed.
 python policy_server.py --policy_path </path/to/downloaded/pt/file>
 ```
-Then, in a separate terminal, run an inference script in `steerable_gym/policies`. 
+Then, in a separate terminal, run an inference script in `steerable-gym/policies`. 
 
 #### Human-issued Commands
 
@@ -155,31 +155,30 @@ The following runs the interactive inference script, allowing the human user to 
 python steerable_eval.py  --ip <IP of machine connected to WidowX> --clip_actions --show_img --path_to_rollouts_dir </path/to/directory/to/save/rollouts>
 ```
 
-When running human evals, ensure that in `steerable_gym/policies/command.yaml` the following arguments are set. We will change these arguments when running evals for the VLM-based high-level policy.
+When running human evals, ensure that in `steerable-gym/policies/command.yaml` the following arguments are set. We will change these arguments when running evals for the VLM-based high-level policy.
 
 ```yaml
 policy_mode: human
 sample_every: 400
 ```
 
-At any point during the script, you may press Ctrl+C to pause the rollout and enter a new steering command. Press Ctrl+C again to quit the rollout (and follow onscreen instructions to save).
+At any point during the script, you may press Ctrl+C to pause the rollout and enter a new steering command. Press Ctrl+C again to quit the rollout (and follow onscreen instructions to save). You may also issue commands with placeholders, e.g., `move from <mushroom> to <plate>`. This will open a GUI, where you can click and hit Enter to fill in the placeholders with corresponding pixel coordinates. Note that all placeholders must have different labels (you cannot write `move from <x> to <x>`).
 
 We recommend checking that Python script for examples of how to run inference.
 
 #### Learned High-level Policy
 
+TODO
 
 #### Custom VLM-based High-level Policy
 
-This section describes how to configure and run evaluation using VLM-based high-level policies. All configuration is controlled through `steerable_gym/policies/command.yaml`
+This section describes how to configure and run evaluation using VLM-based high-level policies. All configuration is controlled through `steerable-gym/policies/command.yaml`
 
 Make sure to modify the appropriate fields before launching `steerable_eval.py`.
 
 When running evals, you may press Ctrl+C to quit the rollout (and follow onscreen instructions to save).
 
-**Gemini High-level Policy**
-
-The `gemini` mode uses an in-context reasoning model to generate high-level steering commands from images and task context. To enable this policy, edit `steerable_gym/policies/command.yaml` as follows:
+**Gemini High-level Policy:** The `gemini` mode uses an in-context reasoning model to generate high-level steering commands from images and task context. To enable this policy, edit `steerable-gym/policies/command.yaml` as follows:
 
 ```yaml
 policy_mode: gemini
@@ -193,7 +192,7 @@ thinking_budget: 1024
 gemini_mode: all
 ```
 
-#### Key Parameters
+**Key Parameters:**
 
 - `policy_mode: gemini`: Enables Gemini-based command generation.
 - `sample_every`: Queries Gemini for a new high-level command every N low-level steps.
@@ -210,9 +209,7 @@ After setting the config, run:
 python steerable_eval.py --ip <IP> --clip_actions --show_img --path_to_rollouts_dir </path/to/save>
 ```
 
-**Task-Level Policy**
-
-The `task_level` mode bypasses high-level reasoning and feeds the task description directly to the low-level policy. To enable this policy, edit `steerable_gym/policies/command.yaml` as follows:
+**Task-Level Policy:** The `task_level` mode bypasses high-level reasoning and feeds the task description directly to the low-level policy. To enable this policy, edit `steerable-gym/policies/command.yaml` as follows:
 
 ```yaml
 policy_mode: task_level
@@ -224,8 +221,6 @@ After setting the config, run:
 ```bash
 python steerable_eval.py --ip <IP> --clip_actions --show_img --path_to_rollouts_dir </path/to/save>
 ```
-
-
 
 ## Training Steerable Policies on Bridge
 Steerable Policies are trained with *standard behavioral cloning*, as OpenVLA is. The primary change is with regards to which language labels the VLA is trained on: rather than task-level instructions provided by datasets like Bridge, we instead train on diverse *steering commands*.
