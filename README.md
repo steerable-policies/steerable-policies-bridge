@@ -115,7 +115,7 @@ On the machine connected to the WidowX, you will need to install:
 The former two packages are Python packages, and can thus be installed with `pip install -e .` in their respective repos. The Trossen scripts depend more heavily on the particulars of the machine connected to the WidowX, so please follow the instructions on that page.
 
 ### Installation: Policy Machine
-On the machine that will host the policy, you will need a conda environment with both this repo, [Steerable Gym](https://github.com/steerable-policies/steerable_gym), and [AgentLace](https://github.com/youliangtan/agentlace) installed. Follow the instructions in [**Installation**](#installation) to install this repo, then run `pip install -e .` to install Steerable Gym and AgentLace, as was done on the robot machine. You do *not* need to install ROS on this machine.
+On the machine that will host the policy, you will need a conda environment with this repo, [Steerable Gym](https://github.com/steerable-policies/steerable_gym), and [AgentLace](https://github.com/youliangtan/agentlace) installed. Follow the instructions in [**Installation**](#installation) to install this repo, then run `pip install -e .` to install Steerable Gym and AgentLace, as was done on the robot machine. You do *not* need to install ROS on this machine.
 
 Additionally, be sure to include a valid `.hf_token` file in this repo (see [OpenVLA's instructions here](https://github.com/openvla/openvla?tab=readme-ov-file#fully-fine-tuning-openvla) for details).
 
@@ -144,7 +144,11 @@ After downloading the policy weights [here](https://huggingface.co/Embodied-CoT/
 # Hosting it on a server is good because you won't have to reload the model every time the eval script crashes / is closed.
 python policy_server.py --policy_path </path/to/downloaded/pt/file>
 ```
-Then, in a separate terminal, run an inference script in `steerable_gym/policies`. The following runs the interactive inference script, allowing the human user to issue steering commands:
+Then, in a separate terminal, run an inference script in `steerable_gym/policies`. 
+
+#### Human-issued Commands
+
+The following runs the interactive inference script, allowing the human user to issue steering commands:
 ```
 # Runs the inference loop: receives images from the WidowX machine, passes images + input language to the policy server,
 # then runs whatever action it returns.
@@ -152,7 +156,11 @@ python steerable_eval.py  --ip <IP of machine connected to WidowX> --clip_action
 ```
 We recommend checking that Python script for examples of how to run inference.
 
-TODO: Add instructions for downloading the repo.
+#### Learned High-level Policy
+
+
+#### Custom VLM-based High-level Policy
+
 
 
 ## Training Steerable Policies on Bridge
