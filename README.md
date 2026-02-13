@@ -131,7 +131,7 @@ roslaunch interbotix_xsarm_control xsarm_control.launch robot_model:=wx250s use_
 Then, in the conda environment where Manipulator Gym and AgentLace are installed, run:
 ```
 source ~/interbotix_ws/devel/setup.bash # Or whichever folder contains the ROS workspace
-cd /PATH/TO/manipulator_gym
+cd /PATH/TO/steerable_gym
 python3 manipulator_server.py --widowx --cam_ids 0
 ```
 
