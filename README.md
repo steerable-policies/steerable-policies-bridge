@@ -77,8 +77,8 @@ conda activate openvla
 conda install pytorch torchvision torchaudio pytorch-cuda=12.4 -c pytorch -c nvidia -y
 
 # Clone and install this repo
-git clone git@github.com:verityw/steerable-vla-bridge.git # TODO
-cd steerable-policies
+git clone git@github.com:steerable-policies/steerable-policies-bridge.git
+cd steerable-policies-bridge
 pip install -e .
 
 # Below is NOT NEEDED for inference!
@@ -108,14 +108,14 @@ Running inference with Steerable Policies can be done with a server-client setup
 These instructions are loosely adapted from [Manipulator Gym](https://github.com/rail-berkeley/manipulator_gym).
 
 On the machine connected to the WidowX, you will need to install:
-- [Manipulator Gym](https://github.com/rail-berkeley/manipulator_gym)
+- [Steerable Gym](https://github.com/steerable-policies/steerable_gym) (our adapted version of Manipulator Gym)
 - [AgentLace](https://github.com/youliangtan/agentlace)
 - [Trossen's Interbotix and ROS scripts](https://docs.trossenrobotics.com/interbotix_xsarms_docs/ros_interface/ros1/software_setup.html)
 
 The former two packages are Python packages, and can thus be installed with `pip install -e .` in their respective repos. The Trossen scripts depend more heavily on the particulars of the machine connected to the WidowX, so please follow the instructions on that page.
 
 ### Installation: Policy Machine
-On the machine that will host the policy, you will need a conda environment with both this repo, [Steerable Gym](TODO), and AgentLace installed. Follow the instructions in [**Installation**](#installation) to install this repo, then run `pip install -e .` to install Steerable Gym and AgentLace, as was done on the robot machine. You do *not* need to install ROS on this machine.
+On the machine that will host the policy, you will need a conda environment with both this repo, [Steerable Gym](https://github.com/steerable-policies/steerable_gym), and [AgentLace](https://github.com/youliangtan/agentlace) installed. Follow the instructions in [**Installation**](#installation) to install this repo, then run `pip install -e .` to install Steerable Gym and AgentLace, as was done on the robot machine. You do *not* need to install ROS on this machine.
 
 Additionally, be sure to include a valid `.hf_token` file in this repo (see [OpenVLA's instructions here](https://github.com/openvla/openvla?tab=readme-ov-file#fully-fine-tuning-openvla) for details).
 
@@ -135,15 +135,15 @@ cd /PATH/TO/manipulator_gym
 python3 manipulator_server.py --widowx --cam_ids 0
 ```
 
-**On the policy machine:** First host the VLA server. Activate the conda environment this repo was installed in and `cd` into `steerable_gym/policies`, then run:
+**On the policy machine:** First host the VLA server. 
+After downloading the policy weights [here](https://huggingface.co/Embodied-CoT/steerable-policy-openvla-7b-bridge), activate the conda environment this repo was installed in and `cd` into `steerable_gym/policies`, then run:
 ```
 # Hosts the steerable policy
 # You can send it http requests containing the task language and images, to which it will reply with actions.
 # By default, it uses 0.0.0.0:8000/act.
 # Hosting it on a server is good because you won't have to reload the model every time the eval script crashes / is closed.
-python policy_server.py
+python policy_server.py --policy_path </path/to/downloaded/pt/file>
 ```
-TODO: Add link to policy
 Then, in a separate terminal, run an inference script in `steerable_gym/policies`. The following runs the interactive inference script, allowing the human user to issue steering commands:
 ```
 # Runs the inference loop: receives images from the WidowX machine, passes images + input language to the policy server,
