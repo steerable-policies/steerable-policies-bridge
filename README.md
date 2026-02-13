@@ -154,12 +154,76 @@ The following runs the interactive inference script, allowing the human user to 
 # then runs whatever action it returns.
 python steerable_eval.py  --ip <IP of machine connected to WidowX> --clip_actions --show_img --path_to_rollouts_dir </path/to/directory/to/save/rollouts>
 ```
+
+When running human evals, ensure that in `steerable_gym/policies/command.yaml` the following arguments are set. We will change these arguments when running evals for the VLM-based high-level policy.
+
+```yaml
+policy_mode: human
+sample_every: 400
+```
+
+At any point during the script, you may press Ctrl+C to pause the rollout and enter a new steering command. Press Ctrl+C again to quit the rollout (and follow onscreen instructions to save).
+
 We recommend checking that Python script for examples of how to run inference.
 
 #### Learned High-level Policy
 
 
 #### Custom VLM-based High-level Policy
+
+This section describes how to configure and run evaluation using VLM-based high-level policies. All configuration is controlled through `steerable_gym/policies/command.yaml`
+
+Make sure to modify the appropriate fields before launching `steerable_eval.py`.
+
+When running evals, you may press Ctrl+C to quit the rollout (and follow onscreen instructions to save).
+
+**Gemini High-level Policy**
+
+The `gemini` mode uses an in-context reasoning model to generate high-level steering commands from images and task context. To enable this policy, edit `steerable_gym/policies/command.yaml` as follows:
+
+```yaml
+policy_mode: gemini
+sample_every: 20
+
+# Task Specification
+task_description: "put the mushroom in the pot on the left"
+
+# Gemini Settings
+thinking_budget: 1024
+gemini_mode: all
+```
+
+#### Key Parameters
+
+- `policy_mode: gemini`: Enables Gemini-based command generation.
+- `sample_every`: Queries Gemini for a new high-level command every N low-level steps.
+- `task_description`: The natural language task description provided to the model.
+- `thinking_budget`: Maximum number of reasoning tokens allowed for Gemini.
+- `gemini_mode`: Controls reasoning style and allowed command types:
+  - `all` – Full reasoning, all steering styles allowed.
+  - `subtask` – Full reasoning, but only task & sub-task level commands allowed.
+  - `noreasoning` – No reasoning trace, all steering styles allowed.
+
+After setting the config, run:
+
+```bash
+python steerable_eval.py --ip <IP> --clip_actions --show_img --path_to_rollouts_dir </path/to/save>
+```
+
+**Task-Level Policy**
+
+The `task_level` mode bypasses high-level reasoning and feeds the task description directly to the low-level policy. To enable this policy, edit `steerable_gym/policies/command.yaml` as follows:
+
+```yaml
+policy_mode: task_level
+sample_every: 20
+task_description: "put the mushroom in the pot on the left"
+```
+
+After setting the config, run:
+```bash
+python steerable_eval.py --ip <IP> --clip_actions --show_img --path_to_rollouts_dir </path/to/save>
+```
 
 
 
