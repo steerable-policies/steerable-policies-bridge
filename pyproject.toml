@@ -52,7 +52,8 @@ dependencies = [
     "tensorflow==2.15.0",
     "tensorflow_datasets==4.9.3",
     "tensorflow_graphics==2021.12.3",
-    "dlimp @ git+https://github.com/moojink/dlimp_openvla"
+    "dlimp @ git+https://github.com/moojink/dlimp_openvla",
+    "opencv-python",
 ]
 
 [project.optional-dependencies]

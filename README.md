@@ -86,7 +86,7 @@ python3 manipulator_server.py --widowx --cam_ids 0
 
 **On the policy machine:** First host the VLA server. 
 After downloading the policy weights [here](https://huggingface.co/Embodied-CoT/steerable-policy-openvla-7b-bridge), activate the conda environment this repo was installed in and `cd` into `steerable-gym/policies`, then run:
-```
+```python
 # Hosts the steerable policy
 # You can send it http requests containing the task language and images, to which it will reply with actions.
 # By default, it uses 0.0.0.0:8000/act.
@@ -100,10 +100,10 @@ Then, in a separate terminal, run an inference script in `steerable-gym/policies
 #### Human-issued Commands
 
 The following runs the interactive inference script, allowing the human user to issue steering commands:
-```
+```python
 # Runs the inference loop: receives images from the WidowX machine, passes images + input language to the policy server,
 # then runs whatever action it returns.
-python steerable_eval.py  --ip <IP of machine connected to WidowX> --clip_actions --show_img --path_to_rollouts_dir </path/to/directory/to/save/rollouts>
+python policies/steerable_eval.py  --ip <IP of machine connected to WidowX> --clip_actions --show_img --path_to_rollouts_dir </path/to/directory/to/save/rollouts>
 ```
 
 When running human evals, ensure that in `steerable-gym/policies/command.yaml` the following arguments are set. We will change these arguments when running evals for the VLM-based high-level policy.
@@ -121,7 +121,18 @@ We recommend checking that Python script for examples of how to run inference.
 
 #### Learned High-level Policy
 
-TODO
+This section describes how to control the Steerable Policy with a high-level embodied reasoning VLM. First, you have to load that VLM as well:
+```python
+# Hosts the embodied reasoner; works effectively the same as policy_server.py
+python reasoner_server.py --reasoner </path/to/downloaded/reasoner/pt/file> --hf_token_path </path/to/.hf_token>
+```
+The weights can be downloaded [here](https://huggingface.co/Embodied-CoT/steerable-policy-openvla-7b-bridge). This can be hosted on a separate machine from the WidowX and VLA policy machines.
+
+Then, run:
+```python
+python policies/embodied_eval.py --ip <VLA server IP> --clip_actions --show_img --path_to_rollouts_dir </path/to/directory/to/save/rollouts> --reasoner_host <reasoner server IP> --requery_rate 5
+```
+You can then input any task-level command, which the reasoner will decompose into steering commands. `requery_rate` is used to specify how many low-level steps to execute before the high-level is re-queried.
 
 ---
 
@@ -161,7 +172,7 @@ gemini_mode: all
 After setting the config, run:
 
 ```bash
-python steerable_eval.py --ip <IP> --clip_actions --show_img --path_to_rollouts_dir </path/to/save>
+python policies/steerable_eval.py --ip <IP> --clip_actions --show_img --path_to_rollouts_dir </path/to/save>
 ```
 
 **Task-Level Policy:** The `task_level` mode bypasses high-level reasoning and feeds the task description directly to the low-level policy. To enable this policy, edit `steerable-gym/policies/command.yaml` as follows:
@@ -198,10 +209,6 @@ Our code implements the following simple changes (see `RLDSBatchTransform` in `p
 This logic only affects `RLDSBatchTransform`, changing the input language for each frame from the defaults provided by Bridge. Thus, it makes no assumptions about the VLA architectural details; any options provided by OpenVLA should still be compatible.
 
 For training the embodied reasoner, please see `ReasonerRLDSBatchTransform` instead. To summarize, that one also indexes into our annotation dictionaries, but instead of replacing the task-level language, it changes the next-token prediction text to be a chain-of-thought rationale followed by a steering command. The resulting fine-tuned VLM can thus autoregressively predict both these things when given a task and observation.
-
-
-
-
 
 ## Citation
 
