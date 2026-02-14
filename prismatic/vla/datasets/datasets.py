@@ -38,17 +38,23 @@ PATH_TO_SUBTASK_LEVEL_COMMANDS = os.path.join(PATH_TO_REASONING_DATA, "subtask_l
 PATH_TO_STEP_TO_SUBTASK =        os.path.join(PATH_TO_REASONING_DATA, "step_to_subtask_dict.json")
 PATH_TO_RATIONALES =             os.path.join(PATH_TO_REASONING_DATA, "rationales.json")
 
-with open(PATH_TO_TRAJ_IDX_KEY_MAP, "r") as f:
-    traj_idx_key_dict = json.load(f)
-    traj_idx_to_key = traj_idx_key_dict["traj_idx_to_key"]
-    key_to_traj_idx = traj_idx_key_dict["key_to_traj_idx"]
-with open(PATH_TO_SUBTASK_LEVEL_COMMANDS, "r") as f:
-    subtask_level_commands = json.load(f)
-with open(PATH_TO_STEP_TO_SUBTASK, "r") as f:
-    step_to_subtask = json.load(f)
-with open(PATH_TO_RATIONALES, "r") as f:
-    rationales = json.load(f)
-
+try:
+    with open(PATH_TO_TRAJ_IDX_KEY_MAP, "r") as f:
+        traj_idx_key_dict = json.load(f)
+        traj_idx_to_key = traj_idx_key_dict["traj_idx_to_key"]
+        key_to_traj_idx = traj_idx_key_dict["key_to_traj_idx"]
+    with open(PATH_TO_SUBTASK_LEVEL_COMMANDS, "r") as f:
+        subtask_level_commands = json.load(f)
+    with open(PATH_TO_STEP_TO_SUBTASK, "r") as f:
+        step_to_subtask = json.load(f)
+    with open(PATH_TO_RATIONALES, "r") as f:
+        rationales = json.load(f)
+except:
+    print(
+        "Could not load reasoning data -- make sure to update `PATH_TO_REASONING_DATA` with the actual path to the compiled reasoning data!"
+    )
+    print("This is only needed for training, feel free to ignore if you just want to run inference.")
+    traj_idx_to_key, key_to_traj_idx, subtask_level_commands, step_to_subtask, rationales = {}, {}, {}, {}, {}
 
 
 @dataclass

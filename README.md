@@ -1,64 +1,13 @@
 # Steerable Vision-Language-Action Policies for Embodied Reasoning and Hierarchical Control
 
-[![arXiv](https://img.shields.io/badge/arXiv-2406.09246-df2a2a.svg?style=for-the-badge)](TODO)
-[![HF Models](https://img.shields.io/badge/%F0%9F%A4%97-Models-yellow?style=for-the-badge)]([TODO](https://huggingface.co/Embodied-CoT/steerable-policy-openvla-7b-bridge))
 
-<!-- [**Getting Started**](#getting-started) | [**Pretrained VLAs**](#pretrained-vlas) | [**Installation**](#installation) | [**Fine-Tuning OpenVLA via LoRA**](#fine-tuning-openvla-via-lora) | [**Fully Fine-Tuning OpenVLA**](#fully-fine-tuning-openvla) |
-[**Training VLAs from Scratch**](#training-vlas-from-scratch) | [**Evaluating OpenVLA**](#evaluating-openvla) | [**MiniVLA Details**](#minivla) | [**Action Chunking**](#action-chunking) | [**Multi-Image**](#multi-image) | [**Project Website**](https://openvla.github.io/) -->
-
-
+[![arXiv](https://img.shields.io/badge/arXiv-2406.09246-df2a2a.svg?style=for-the-badge)](TODO - also edit number)
+[![HF Models](https://img.shields.io/badge/%F0%9F%A4%97-Models-yellow?style=for-the-badge)](https://huggingface.co/Embodied-CoT/steerable-policy-openvla-7b-bridge)
 
 We present **Steerable Policies**: vision-language-action models (VLAs) that accept diverse instructions at many levels of abstraction.
 
 This codebase is designed for training Steerable Policies on the Bridge dataset. It is built atop the [OpenVLA](https://openvla.github.io/). **We thus highly recommend reading through that codebase's README as well, as it provides much more extensive details on usage and troubleshooting.**
 
-<!-- ## Getting Started
-
-To get started with loading and running OpenVLA models for inference, we provide a lightweight interface that leverages
-HuggingFace `transformers` AutoClasses, with minimal dependencies.
-
-For example, to load `openvla-7b` for zero-shot instruction following in the
-[BridgeData V2 environments](https://rail-berkeley.github.io/bridgedata/) with a WidowX robot:
-
-```python
-# Install minimal dependencies (`torch`, `transformers`, `timm`, `tokenizers`, ...)
-# > pip install -r https://raw.githubusercontent.com/openvla/openvla/main/requirements-min.txt
-from transformers import AutoModelForVision2Seq, AutoProcessor
-from PIL import Image
-
-import torch
-
-# Load Processor & VLA
-processor = AutoProcessor.from_pretrained("openvla/openvla-7b", trust_remote_code=True)
-vla = AutoModelForVision2Seq.from_pretrained(
-    "openvla/openvla-7b",
-    attn_implementation="flash_attention_2",  # [Optional] Requires `flash_attn`
-    torch_dtype=torch.bfloat16,
-    low_cpu_mem_usage=True,
-    trust_remote_code=True
-).to("cuda:0")
-
-# Grab image input & format prompt
-image: Image.Image = get_from_camera(...)
-prompt = "In: What action should the robot take to {<INSTRUCTION>}?\nOut:"
-
-# Predict Action (7-DoF; un-normalize for BridgeData V2)
-inputs = processor(prompt, image).to("cuda:0", dtype=torch.bfloat16)
-action = vla.predict_action(**inputs, unnorm_key="bridge_orig", do_sample=False)
-
-# Execute...
-robot.act(action, ...)
-```
-
-We also provide an [example script for fine-tuning OpenVLA models for new tasks and
-embodiments](./vla-scripts/finetune.py); this script supports different fine-tuning modes -- including (quantized)
-low-rank adaptation (LoRA) supported by [HuggingFace's PEFT library](https://huggingface.co/docs/peft/en/index).
-
-For deployment, we provide a lightweight script for [serving OpenVLA models over a REST API](./vla-scripts/deploy.py),
-providing an easy way to integrate OpenVLA models into existing robot control stacks,
-removing any requirement for powerful on-device compute.
-
---- -->
 
 ## Installation
 
@@ -142,9 +91,11 @@ After downloading the policy weights [here](https://huggingface.co/Embodied-CoT/
 # You can send it http requests containing the task language and images, to which it will reply with actions.
 # By default, it uses 0.0.0.0:8000/act.
 # Hosting it on a server is good because you won't have to reload the model every time the eval script crashes / is closed.
-python policy_server.py --policy_path </path/to/downloaded/pt/file>
+python policy_server.py --policy_path </path/to/downloaded/pt/file> --hf_token_path </path/to/.hf_token>
 ```
 Then, in a separate terminal, run an inference script in `steerable-gym/policies`. 
+
+---
 
 #### Human-issued Commands
 
@@ -166,9 +117,13 @@ At any point during the script, you may press Ctrl+C to pause the rollout and en
 
 We recommend checking that Python script for examples of how to run inference.
 
+---
+
 #### Learned High-level Policy
 
 TODO
+
+---
 
 #### Custom VLM-based High-level Policy
 
