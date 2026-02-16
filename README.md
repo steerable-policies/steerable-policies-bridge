@@ -1,7 +1,7 @@
 # Steerable Vision-Language-Action Policies for Embodied Reasoning and Hierarchical Control
 
 
-[![arXiv](https://img.shields.io/badge/arXiv-2406.09246-df2a2a.svg?style=for-the-badge)](TODO - also edit number)
+[![arXiv](https://img.shields.io/badge/arXiv-2406.09246-df2a2a.svg?style=for-the-badge)](AwaitingLink)
 [![HF Models](https://img.shields.io/badge/%F0%9F%A4%97-Models-yellow?style=for-the-badge)](https://huggingface.co/Embodied-CoT/steerable-policy-openvla-7b-bridge)
 
 We present **Steerable Policies**: vision-language-action models (VLAs) that accept diverse instructions at many levels of abstraction.
