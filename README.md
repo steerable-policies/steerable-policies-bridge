@@ -4,7 +4,7 @@
 [![arXiv](https://img.shields.io/badge/arXiv-2602.13193-df2a2a.svg?style=for-the-badge)](https://arxiv.org/abs/2602.13193)
 [![HF Models](https://img.shields.io/badge/%F0%9F%A4%97-Models-yellow?style=for-the-badge)](https://huggingface.co/Embodied-CoT/steerable-policy-openvla-7b-bridge)
 
-We present **Steerable Policies**: vision-language-action models (VLAs) that accept diverse instructions at many levels of abstraction.
+We present [**Steerable Policies**](https://steerable-policies.github.io/): vision-language-action models (VLAs) that accept diverse instructions at many levels of abstraction.
 
 This codebase is designed for training Steerable Policies on the Bridge dataset. It is built atop the [OpenVLA](https://openvla.github.io/). **We thus highly recommend reading through that codebase's README as well, as it provides much more extensive details on usage and troubleshooting.**
 
